@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -15,3 +16,11 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__.'/settings.php';
+
+
+Route::middleware(['auth', 'verified'])
+    ->prefix('admin')
+    ->as('admin.')
+    ->group(function () {
+        Route::get('/', DashboardController::class)->name('dashboard');
+    });
