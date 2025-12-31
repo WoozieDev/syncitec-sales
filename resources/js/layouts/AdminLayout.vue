@@ -4,6 +4,7 @@ import { Link, usePage } from "@inertiajs/vue3";
 import { Menu } from "lucide-vue-next";
 
 import AppLayout from "@/layouts/AppLayout.vue";
+import ThemeToggle from "@/components/shared/ThemeToggle.vue";
 import { adminNav } from "@/navigation/admin";
 import { usePermissions } from "@/composables/usePermissions";
 
@@ -118,6 +119,8 @@ const closeMobile = () => (mobileOpen.value = false);
                     </div>
 
                     <div class="flex items-center gap-2">
+                        <ThemeToggle />
+                        
                         <Link href="/" class="rounded-md border px-3 py-2 text-sm hover:bg-accent">
                             Ver tienda
                         </Link>
