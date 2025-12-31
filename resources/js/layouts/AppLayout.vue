@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
-import type { BreadcrumbItemType } from '@/types';
+import { Head } from "@inertiajs/vue3";
+import FlashToaster from "@/components/shared/FlashToaster.vue";
 
-interface Props {
-    breadcrumbs?: BreadcrumbItemType[];
-}
-
-withDefaults(defineProps<Props>(), {
-    breadcrumbs: () => [],
-});
+const props = defineProps<{
+    title?: string;
+}>();
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
+
+    <Head :title="props.title ? `${props.title}` : 'App'" />
+
+    <div class="min-h-dvh bg-background text-foreground">
+        <FlashToaster />
         <slot />
-    </AppLayout>
+    </div>
 </template>
