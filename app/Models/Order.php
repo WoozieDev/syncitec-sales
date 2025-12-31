@@ -78,6 +78,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helpers
