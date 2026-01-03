@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -33,4 +34,7 @@ Route::middleware(['auth', 'verified'])
         Route::resource('roles', RoleController::class);
 
         Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');
+
+        Route::put('categories/{category}/restore', [CategoryController::class, 'restore'])->withTrashed()->name('categories.restore');
+        Route::resource('categories', CategoryController::class);
     });

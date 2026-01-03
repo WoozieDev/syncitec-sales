@@ -17,10 +17,12 @@ class Category extends Model
         'name',
         'slug',
         'is_active',
+        'sort_order',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'sort_order' => 'integer',
     ];
 
     /*
@@ -36,7 +38,7 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id')->orderBy('sort_order')->orderBy('name');
     }
 
     /*

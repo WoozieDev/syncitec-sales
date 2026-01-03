@@ -30,6 +30,13 @@ class PermissionSeeder extends Seeder
 
             // Permissions
             'permissions.view',
+
+            // Categories
+            'categories.view',
+            'categories.create',
+            'categories.update',
+            'categories.delete',
+
         ];
 
         foreach ($permissions as $name) {

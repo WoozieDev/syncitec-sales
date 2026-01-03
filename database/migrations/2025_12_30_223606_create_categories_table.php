@@ -19,13 +19,16 @@ return new class extends Migration
                 ->constrained('categories')
                 ->nullOnDelete();
 
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
+            $table->string('name', 120);
+            $table->string('slug', 140)->unique();
 
-            $table->index('parent_id');
-            $table->index('is_active');
+            $table->boolean('is_active')->default(true);
+            $table->unsignedInteger('sort_order')->default(0);
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['parent_id', 'is_active']);
         });
     }
 
