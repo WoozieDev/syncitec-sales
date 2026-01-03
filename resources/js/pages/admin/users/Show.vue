@@ -15,6 +15,7 @@ const props = defineProps<{
 }>();
 
 const isDeleted = computed(() => !!props.user.deleted_at);
+const isProtected = computed(() => props.user.is_superadmin);
 
 const confirmOpen = ref(false);
 
@@ -37,27 +38,35 @@ const doRestore = () => {
     <AdminLayout :title="props.user ? `Usuario: ${props.user.name}` : 'Usuario'">
         <div class="space-y-6">
             <AdminPageHeader :title="props.user.name" description="Detalle del usuario y su información.">
+
                 <template #actions>
-                    <Link :href="`/admin/users/${props.user.id}/edit`"
-                        class="rounded-md border px-3 py-2 text-sm hover:bg-accent">
-                        Editar
-                    </Link>
+                    <template v-if="!isProtected">
+                        <Link :href="`/admin/users/${props.user.id}/edit`"
+                            class="rounded-md border px-3 py-2 text-sm hover:bg-accent">
+                            Editar
+                        </Link>
 
-                    <button v-if="!isDeleted" type="button"
-                        class="rounded-md border border-destructive/40 px-3 py-2 text-sm text-destructive hover:bg-destructive/10"
-                        @click="onDelete">
-                        Eliminar
-                    </button>
+                        <button v-if="!isDeleted" type="button"
+                            class="rounded-md border border-destructive/40 px-3 py-2 text-sm text-destructive hover:bg-destructive/10"
+                            @click="onDelete">
+                            Eliminar
+                        </button>
 
-                    <button v-else type="button" class="rounded-md border px-3 py-2 text-sm hover:bg-accent"
-                        @click="doRestore">
-                        Restaurar
-                    </button>
+                        <button v-else type="button" class="rounded-md border px-3 py-2 text-sm hover:bg-accent"
+                            @click="doRestore">
+                            Restaurar
+                        </button>
+                    </template>
+
+                    <span v-else class="text-sm text-muted-foreground">
+                        Usuario protegido
+                    </span>
 
                     <Link href="/admin/users" class="rounded-md border px-3 py-2 text-sm hover:bg-accent">
                         Volver
                     </Link>
                 </template>
+
             </AdminPageHeader>
 
             <div class="rounded-lg border bg-card p-4">

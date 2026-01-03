@@ -56,6 +56,7 @@ class UserController extends Controller
                 'is_active' => (bool) $user->is_active,
                 'deleted_at' => $user->deleted_at,
                 'roles' => $user->roles->pluck('name')->values(),
+                'is_superadmin' => $user->hasRole('superadmin'),
                 'created_at' => $user->created_at?->toDateTimeString(),
             ]);
 
@@ -119,6 +120,7 @@ class UserController extends Controller
                 'email' => $user->email,
                 'is_active' => (bool) $user->is_active,
                 'roles' => $user->getRoleNames()->values(),
+                'is_superadmin' => $user->hasRole('superadmin'),
                 'created_at' => $user->created_at?->toDateTimeString(),
                 'deleted_at' => $user->deleted_at?->toDateTimeString(),
             ],
@@ -127,6 +129,8 @@ class UserController extends Controller
 
     public function edit(User $user): Response
     {
+        $this->ensureNotProtectedSuperadmin($user);
+
         $roles = Role::query()
             ->where('guard_name', 'web')
             ->orderBy('name')
@@ -147,6 +151,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->ensureNotProtectedSuperadmin($user);
+
         $data = $request->validated();
 
         $user->update([
@@ -172,6 +178,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->ensureNotProtectedSuperadmin($user);
+
         $user->delete();
 
         return redirect()
@@ -181,10 +189,21 @@ class UserController extends Controller
 
     public function restore(User $user)
     {
+        $this->ensureNotProtectedSuperadmin($user);
+
         $user->restore();
 
         return redirect()
             ->route('admin.users.show', $user)
             ->with('success', 'Usuario restaurado correctamente.');
     }
+
+    private function ensureNotProtectedSuperadmin(User $user): void
+    {
+        if ($user->hasRole('superadmin')) {
+            abort(403, 'This user is protected.');
+        }
+    }
+
+
 }

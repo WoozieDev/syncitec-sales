@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { Link, router } from "@inertiajs/vue3";
+import { Pencil, Trash2, RotateCcw } from "lucide-vue-next";
 
 import AdminLayout from "@/layouts/AdminLayout.vue";
 import AdminPageHeader from "@/components/admin/AdminPageHeader.vue";
@@ -9,6 +10,8 @@ import SearchInput from "@/components/shared/SearchInput.vue";
 import DataTable from "@/components/shared/DataTable.vue";
 import Pagination from "@/components/shared/Pagination.vue";
 import EmptyState from "@/components/shared/EmptyState.vue";
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
+
 
 import type { PaginationLink } from "@/types/pagination";
 import type { RoleOption, UserFilters, UserListItem } from "@/types/admin/users";
@@ -64,6 +67,34 @@ const clear = () => {
 
 // Optional: auto-apply on select changes (role/status/trashed)
 watch([role, status, trashed], () => apply());
+
+
+const confirmOpen = ref(false);
+const selectedUserId = ref<number | null>(null);
+
+const confirmDelete = (id: number) => {
+    selectedUserId.value = id;
+    confirmOpen.value = true;
+};
+
+const doDelete = () => {
+    if (!selectedUserId.value) return;
+
+    router.delete(`/admin/users/${selectedUserId.value}`, {
+        preserveScroll: true,
+    });
+
+    confirmOpen.value = false;
+    selectedUserId.value = null;
+};
+
+const restoreUserId = ref<number | null>(null);
+
+const doRestore = (id: number) => {
+    router.put(`/admin/users/${id}/restore`, {}, { preserveScroll: true });
+};
+
+
 </script>
 
 <template>
@@ -137,12 +168,10 @@ watch([role, status, trashed], () => apply());
                     <template #body>
                         <tr v-for="u in props.users.data" :key="u.id" class="border-b last:border-0">
                             <td class="px-4 py-3 font-medium">
-                                <span v-if="u.deleted_at" class="line-through opacity-70">
+                                <Link :href="`/admin/users/${u.id}`" class="cursor-pointer hover:underline"
+                                    :class="u.deleted_at ? 'line-through opacity-70' : ''" title="Ver usuario">
                                     {{ u.name }}
-                                </span>
-                                <span v-else>
-                                    {{ u.name }}
-                                </span>
+                                </Link>
                             </td>
 
                             <td class="px-4 py-3 text-muted-foreground">
@@ -161,11 +190,31 @@ watch([role, status, trashed], () => apply());
                             </td>
 
                             <td class="px-4 py-3 text-right">
-                                <Link :href="`/admin/users/${u.id}`"
-                                    class="rounded-md border px-3 py-2 text-sm hover:bg-accent">
-                                    Ver
-                                </Link>
+                                <div v-if="!u.is_superadmin" class="flex justify-end gap-2">
+                                    <Link :href="`/admin/users/${u.id}/edit`"
+                                        class="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-accent"
+                                        title="Editar">
+                                        <Pencil class="h-4 w-4" />
+                                    </Link>
+
+                                    <!-- Restore only if deleted -->
+                                    <button v-if="u.deleted_at" type="button"
+                                        class="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-accent"
+                                        title="Restaurar" @click="doRestore(u.id)">
+                                        <RotateCcw class="h-4 w-4" />
+                                    </button>
+
+                                    <!-- Delete only if NOT deleted -->
+                                    <button v-else type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-md
+           border border-destructive/40 text-destructive hover:bg-destructive/10" title="Eliminar"
+                                        @click="confirmDelete(u.id)">
+                                        <Trash2 class="h-4 w-4" />
+                                    </button>
+                                </div>
+
+                                <span v-else class="text-xs text-muted-foreground">Protegido</span>
                             </td>
+
                         </tr>
                     </template>
 
@@ -184,5 +233,10 @@ watch([role, status, trashed], () => apply());
                 </template>
             </EmptyState>
         </div>
+
+        <ConfirmDialog v-model:open="confirmOpen" title="Eliminar usuario"
+            description="Esta acción enviará el usuario a la papelera." confirm-text="Sí, eliminar"
+            cancel-text="Cancelar" :destructive="true" @confirm="doDelete" />
+
     </AdminLayout>
 </template>
