@@ -12,6 +12,7 @@ import Pagination from "@/components/shared/Pagination.vue";
 import EmptyState from "@/components/shared/EmptyState.vue";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 
+import { usePermissions } from "@/composables/usePermissions";
 
 import type { PaginationLink } from "@/types/pagination";
 import type { RoleOption, UserFilters, UserListItem } from "@/types/admin/users";
@@ -24,6 +25,12 @@ const props = defineProps<{
     roles: RoleOption[];
     filters: UserFilters;
 }>();
+
+const { can } = usePermissions();
+
+const canUpdate = computed(() => can("users.update"));
+const canDelete = computed(() => can("users.delete"));
+
 
 // Local reactive filters (initialized from server)
 const search = ref(props.filters.search ?? "");
@@ -190,30 +197,35 @@ const doRestore = (id: number) => {
                             </td>
 
                             <td class="px-4 py-3 text-right">
-                                <div v-if="!u.is_superadmin" class="flex justify-end gap-2">
-                                    <Link :href="`/admin/users/${u.id}/edit`"
-                                        class="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-accent"
-                                        title="Editar">
-                                        <Pencil class="h-4 w-4" />
-                                    </Link>
+                                <template v-if="u.is_superadmin">
+                                    <span class="text-xs text-muted-foreground">Protegido</span>
+                                </template>
 
-                                    <!-- Restore only if deleted -->
-                                    <button v-if="u.deleted_at" type="button"
-                                        class="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-accent"
-                                        title="Restaurar" @click="doRestore(u.id)">
-                                        <RotateCcw class="h-4 w-4" />
-                                    </button>
+                                <template v-else>
+                                    <div class="flex justify-end gap-2">
+                                        <!-- Edit -->
+                                        <Link v-if="canUpdate" :href="`/admin/users/${u.id}/edit`"
+                                            class="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-accent"
+                                            title="Editar">
+                                            <Pencil class="h-4 w-4" />
+                                        </Link>
 
-                                    <!-- Delete only if NOT deleted -->
-                                    <button v-else type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-md
-           border border-destructive/40 text-destructive hover:bg-destructive/10" title="Eliminar"
-                                        @click="confirmDelete(u.id)">
-                                        <Trash2 class="h-4 w-4" />
-                                    </button>
-                                </div>
+                                        <!-- Restore -->
+                                        <button v-if="u.deleted_at && canUpdate" type="button"
+                                            class="inline-flex h-8 w-8 items-center justify-center rounded-md border hover:bg-accent"
+                                            title="Restaurar" @click="doRestore(u.id)">
+                                            <RotateCcw class="h-4 w-4" />
+                                        </button>
 
-                                <span v-else class="text-xs text-muted-foreground">Protegido</span>
+                                        <!-- Delete -->
+                                        <button v-if="!u.deleted_at && canDelete" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-destructive/40 text-destructive hover:bg-destructive/10" title="Eliminar"
+                                            @click="confirmDelete(u.id)">
+                                            <Trash2 class="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                </template>
                             </td>
+
 
                         </tr>
                     </template>

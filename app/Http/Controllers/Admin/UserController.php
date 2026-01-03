@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,6 +17,8 @@ class UserController extends Controller
 {
     public function index(Request $request): Response
     {
+        Gate::authorize('viewAny', User::class);
+
         $search = trim((string) $request->get('search', ''));
         $role = $request->get('role'); // role name
         $status = $request->get('status'); // active|inactive
@@ -81,6 +84,8 @@ class UserController extends Controller
     // placeholders: implementaremos paso a paso
     public function create(): Response
     {
+        Gate::authorize('create', User::class);
+
         $roles = Role::query()
             ->where('guard_name', 'web')
             ->orderBy('name')
@@ -94,6 +99,8 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
+        Gate::authorize('create', User::class);
+
         $data = $request->validated();
 
         $user = User::create([
@@ -113,6 +120,8 @@ class UserController extends Controller
 
     public function show(User $user): Response
     {
+        Gate::authorize('view', $user);
+
         return Inertia::render('admin/users/Show', [
             'user' => [
                 'id' => $user->id,
@@ -129,6 +138,8 @@ class UserController extends Controller
 
     public function edit(User $user): Response
     {
+        Gate::authorize('update', $user);
+
         $this->ensureNotProtectedSuperadmin($user);
 
         $roles = Role::query()
@@ -151,6 +162,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         $this->ensureNotProtectedSuperadmin($user);
 
         $data = $request->validated();
@@ -178,6 +191,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        Gate::authorize('delete', $user);
+
         $this->ensureNotProtectedSuperadmin($user);
 
         $user->delete();
@@ -189,6 +204,8 @@ class UserController extends Controller
 
     public function restore(User $user)
     {
+        Gate::authorize('restore', $user);
+
         $this->ensureNotProtectedSuperadmin($user);
 
         $user->restore();
