@@ -11,7 +11,7 @@ const props = defineProps<{
 
     <Head :title="props.title ? `${props.title}` : 'App'" />
 
-    <div class="min-h-dvh bg-background text-foreground">
+    <div class="min-h-screen bg-background text-foreground">
         <FlashToaster />
         <slot />
     </div>

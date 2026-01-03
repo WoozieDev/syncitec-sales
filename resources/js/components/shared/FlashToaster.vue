@@ -28,9 +28,11 @@ watch(
     },
     { deep: true, immediate: true }
 );
+
 </script>
 
 <template>
-    <!-- Global toaster -->
-    <Toaster rich-colors position="top-right" />
+    <Toaster rich-colors position="top-right" :toast-options="{
+        duration: 3500,
+    }" />
 </template>
