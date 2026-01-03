@@ -21,6 +21,13 @@ class PermissionSeeder extends Seeder
             'users.create',
             'users.update',
             'users.delete',
+
+            // Roles
+            'roles.view',
+            'roles.create',
+            'roles.update',
+            'roles.delete',
+
         ];
 
         foreach ($permissions as $name) {
@@ -51,6 +58,11 @@ class PermissionSeeder extends Seeder
                 'users.create',
                 'users.update',
                 'users.delete',
+                'roles.view',
+                'roles.create',
+                'roles.update',
+                'roles.delete',
+
             ])->where('guard_name', $guard)->get());
         }
 
@@ -58,6 +70,7 @@ class PermissionSeeder extends Seeder
             $manager->syncPermissions(Permission::whereIn('name', [
                 'users.view',
                 'users.update',
+                'roles.view',
             ])->where('guard_name', $guard)->get());
         }
     }

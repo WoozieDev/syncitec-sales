@@ -7,8 +7,10 @@ export type NavItem = {
 };
 
 export const adminNav: NavItem[] = [
-    { label: 'Dashboard', href: '/admin' },
-
+    { 
+        label: 'Dashboard', 
+        href: '/admin' 
+    },
     {
         label: 'Ventas POS',
         href: '/admin/sales',
@@ -30,7 +32,11 @@ export const adminNav: NavItem[] = [
         href: '/admin/categories',
         permissionsAny: ['categories.view'],
     },
-    { label: 'Marcas', href: '/admin/brands', permissionsAny: ['brands.view'] },
+    { 
+        label: 'Marcas', 
+        href: '/admin/brands', 
+        permissionsAny: ['brands.view'] 
+    },
     {
         label: 'Inventario',
         href: '/admin/inventory',
@@ -42,8 +48,16 @@ export const adminNav: NavItem[] = [
         href: '/admin/coupons',
         permissionsAny: ['coupons.view'],
     },
-
-    { label: 'Usuarios', href: '/admin/users', permissionsAny: ['users.view'] },
+    {   
+        label: 'Usuarios', 
+        href: '/admin/users', 
+        permissionsAny: ['users.view'] 
+    },
+    {   
+        label: 'Roles', 
+        href: '/admin/roles', 
+        permissionsAny: ['roles.view'] 
+    },
     {
         label: 'Configuración',
         href: '/admin/settings',

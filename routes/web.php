@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,4 +28,6 @@ Route::middleware(['auth', 'verified'])
 
         Route::put('users/{user}/restore', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
         Route::resource('users', UserController::class);
+
+        Route::resource('roles', RoleController::class);
     });
