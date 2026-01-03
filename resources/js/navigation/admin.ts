@@ -59,6 +59,12 @@ export const adminNav: NavItem[] = [
         permissionsAny: ['roles.view'] 
     },
     {
+        label: 'Permisos',
+        href: '/admin/permissions',
+        permissionsAny: ['permissions.view'],
+    },
+
+    {
         label: 'Configuración',
         href: '/admin/settings',
         permissionsAny: ['settings.manage'],

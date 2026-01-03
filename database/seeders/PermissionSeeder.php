@@ -28,6 +28,8 @@ class PermissionSeeder extends Seeder
             'roles.update',
             'roles.delete',
 
+            // Permissions
+            'permissions.view',
         ];
 
         foreach ($permissions as $name) {
@@ -62,7 +64,7 @@ class PermissionSeeder extends Seeder
                 'roles.create',
                 'roles.update',
                 'roles.delete',
-
+                'permissions.view',
             ])->where('guard_name', $guard)->get());
         }
 
@@ -71,6 +73,7 @@ class PermissionSeeder extends Seeder
                 'users.view',
                 'users.update',
                 'roles.view',
+                'permissions.view',
             ])->where('guard_name', $guard)->get());
         }
     }

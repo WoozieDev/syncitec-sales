@@ -70,8 +70,12 @@ const closeMobile = () => (mobileOpen.value = false);
                 </div>
 
                 <nav class="px-2 pb-4 space-y-1">
-                    <Link v-for="item in navItems" :key="item.href" :href="item.href" class="block rounded-md px-3 py-2 text-sm transition
-                   hover:bg-accent hover:text-accent-foreground">
+                    <Link 
+                        v-for="item in navItems" 
+                        :key="item.href" 
+                        :href="item.href" 
+                        class="block rounded-md px-3 py-2 text-sm transition hover:bg-accent hover:text-accent-foreground"
+                    >
                         {{ item.label }}
                     </Link>
                 </nav>
