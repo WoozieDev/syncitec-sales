@@ -1,13 +1,26 @@
 <script setup lang="ts">
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 
 import AdminLayout from "@/layouts/AdminLayout.vue";
 import AdminPageHeader from "@/components/admin/AdminPageHeader.vue";
 import UserForm from "@/pages/admin/users/Partials/UserForm.vue";
 
-const submit = (payload: { name: string; email: string; is_active: boolean }) => {
-    // In Fase 5: router.post(...)
-    console.log("create user payload", payload);
+import type { RoleOption } from "@/types/admin/users";
+
+const props = defineProps<{
+    roles: RoleOption[];
+}>();
+
+const submit = (payload: {
+    name: string;
+    email: string;
+    password: string;
+    is_active: boolean;
+    role: string;
+}) => {
+    router.post("/admin/users", payload, {
+        preserveScroll: true,
+    });
 };
 </script>
 
@@ -23,7 +36,7 @@ const submit = (payload: { name: string; email: string; is_active: boolean }) =>
             </AdminPageHeader>
 
             <div class="rounded-lg border bg-card p-4">
-                <UserForm submit-label="Crear" @submit="submit" />
+                <UserForm :roles="props.roles" submit-label="Crear" @submit="submit" />
             </div>
         </div>
     </AdminLayout>

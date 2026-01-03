@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -23,4 +24,7 @@ Route::middleware(['auth', 'verified'])
     ->as('admin.')
     ->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
+
+        Route::put('users/{user}/restore', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
+        Route::resource('users', UserController::class);
     });
