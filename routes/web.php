@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -37,4 +38,7 @@ Route::middleware(['auth', 'verified'])
 
         Route::put('categories/{category}/restore', [CategoryController::class, 'restore'])->withTrashed()->name('categories.restore');
         Route::resource('categories', CategoryController::class);
+
+        Route::resource('brands', BrandController::class);
+        Route::put('brands/{brand}/restore', [BrandController::class, 'restore'])->withTrashed()->name('brands.restore');
     });
