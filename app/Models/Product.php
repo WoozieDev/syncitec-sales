@@ -53,6 +53,16 @@ class Product extends Model
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
     }
 
+    public function primaryImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    public function inventoryMovements()
+    {
+        return $this->hasMany(InventoryMovement::class)->latest();
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helpers
@@ -65,5 +75,11 @@ class Product extends Model
 
         // MVP simple formatting; later we can add IntlNumberFormatter
         return 'S/ ' . number_format($amount, 2, '.', ',');
+    }
+
+    public function getStockAvailableAttribute(): int
+    {
+        // In MVP we only have stock_on_hand, but we leave hook for reserved later
+        return max(0, (int) $this->stock_on_hand);
     }
 }

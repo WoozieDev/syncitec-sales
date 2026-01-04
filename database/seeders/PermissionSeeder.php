@@ -43,6 +43,15 @@ class PermissionSeeder extends Seeder
             'brands.update',
             'brands.delete',
 
+            // Products
+            'products.view',
+            'products.create',
+            'products.update',
+            'products.delete',
+
+            // Inventory (read-only por ahora, v2 para registrar movimientos desde UI)
+            'inventory.view',
+
         ];
 
         foreach ($permissions as $name) {

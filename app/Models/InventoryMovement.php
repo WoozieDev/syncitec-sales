@@ -34,6 +34,7 @@ class InventoryMovement extends Model
 
     protected $casts = [
         'quantity' => 'integer',
+        'reference_id' => 'integer',
         'created_by' => 'integer',
     ];
 

@@ -19,6 +19,7 @@ return new class extends Migration
 
             $table->string('path');
             $table->unsignedInteger('sort_order')->default(0);
+            $table->boolean('is_primary');
 
             $table->timestamps();
 

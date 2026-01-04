@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])
     ->prefix('admin')
     ->as('admin.')
     ->group(function () {
+        
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::put('users/{user}/restore', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
@@ -41,4 +43,8 @@ Route::middleware(['auth', 'verified'])
 
         Route::resource('brands', BrandController::class);
         Route::put('brands/{brand}/restore', [BrandController::class, 'restore'])->withTrashed()->name('brands.restore');
+
+        Route::resource('products', ProductController::class);
+        Route::put('products/{product}/restore', [ProductController::class, 'restore'])->withTrashed()->name('products.restore');
+
     });
