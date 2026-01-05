@@ -5,27 +5,35 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div class="overflow-hidden rounded-lg border bg-card">
+    <div class="relative overflow-hidden rounded-lg border bg-card">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full border-collapse text-sm">
+                <!-- Header -->
                 <thead class="border-b bg-muted/40">
-                    <tr>
+                    <tr
+                        class="text-left text-xs font-medium tracking-wide text-muted-foreground uppercase"
+                    >
                         <slot name="head" />
                     </tr>
                 </thead>
 
-                <tbody>
+                <!-- Body -->
+                <tbody
+                    class="divide-y divide-border"
+                    :class="
+                        props.striped
+                            ? '[&>tr:nth-child(even)]:bg-muted/30'
+                            : ''
+                    "
+                >
                     <slot name="body" />
                 </tbody>
             </table>
         </div>
 
-        <div v-if="$slots.footer" class="border-t bg-muted/20 p-3">
+        <!-- Footer / Pagination -->
+        <div v-if="$slots.footer" class="border-t bg-muted/20 px-4 py-3">
             <slot name="footer" />
         </div>
     </div>
 </template>
-
-<style scoped>
-/* opcional: si luego quieres striped por prop */
-</style>
